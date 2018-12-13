@@ -1,0 +1,2 @@
+# Location-AdaptiveZoneReplication
+ConsistentHash(false)とCustomZoneは配置方法が異なる
