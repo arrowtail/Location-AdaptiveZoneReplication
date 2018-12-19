@@ -53,31 +53,32 @@ public class ZoneSim {
 		int rebuildHeartBeatCount=0;//再構成ハートビート数
 		int reconstitutionCount=0;//再構成
 
-/*
+//提案手法
 		for (int i = 0; i < ROUND; i++) {
-			System.out.println(i);
+			//System.out.println(i);
 			ArrayList<ChordNode> nodes = new ArrayList<ChordNode>();
-			ConsistentHash aConsistentHash = new ConsistentHash();
-			nodes = aConsistentHash.init(nodes);
-			nodes = aConsistentHash.initChurnNode(nodes, NODENUM, CHURNRATE);
-			aConsistentHash.replication(nodes);
-			nodes = aConsistentHash.run(nodes,ROUND,CHURNFREQUENCY);
+			LocationCustomZone aLocationCustomZone = new LocationCustomZone();
+			nodes = aLocationCustomZone.init(nodes);
+			nodes = aLocationCustomZone.initChurnNode(nodes, NODENUM, CHURNRATE);
+			aLocationCustomZone.replication(nodes);
+			nodes = aLocationCustomZone.run(nodes,ROUND,CHURNFREQUENCY);
 //再構築
-			rebuildCount += aConsistentHash.getRebuildingCount(nodes);
+			rebuildCount += aLocationCustomZone.getRebuildingCount(nodes);
 //ハートビート
-			heartbeatCount += aConsistentHash.getHeartBeatCount(nodes);
-			rebuildHeartBeatCount += aConsistentHash.getRebuildingHeartBeatCount(nodes);
-			replicaAverage += aConsistentHash.replicaCount(nodes);
-			nodeAverage += aConsistentHash.nodeCount(nodes);
-			arriveZone += aConsistentHash.getZoneReplicaCount(nodes);
-			message += aConsistentHash.getMssageCount(nodes);
-			reconstitutionCount += aConsistentHash.getReconstitutionCount(nodes);
+			heartbeatCount += aLocationCustomZone.getHeartBeatCount(nodes);
+			rebuildHeartBeatCount += aLocationCustomZone.getRebuildingHeartBeatCount(nodes);
+			replicaAverage += aLocationCustomZone.replicaCount(nodes);
+			nodeAverage += aLocationCustomZone.nodeCount(nodes);
+			arriveZone += aLocationCustomZone.getZoneReplicaCount(nodes);
+			message += aLocationCustomZone.getMssageCount(nodes);
+			reconstitutionCount += aLocationCustomZone.getReconstitutionCount(nodes);
 		}
-		System.out.println("ConsistentHash");
-*/
+		System.out.println("LocationCustomZone");
 
+/*
+//AdaptiveZoneReplication
 		for (int i = 0; i < ROUND; i++) {
-			System.out.println(i);
+			//System.out.println(i);
 			ArrayList<ChordNode> nodes = new ArrayList<ChordNode>();
 			CustomZone aCustomZone = new CustomZone();
 			nodes = aCustomZone.init(nodes);
@@ -96,7 +97,7 @@ public class ZoneSim {
 			reconstitutionCount += aCustomZone.getReconstitutionCount(nodes);
 		}
 		System.out.println("CustomZone");
-
+*/
 //生存率
 		//System.out.println(MAXCHURNRATE*0.01 + " " + (double)arriveZone/(ROUND*ZONENUM)*100 + " " + message/ROUND);
 //メッセージ数,ハートビート数,再構成,再構成ハートビート,生存率,再構成回数
