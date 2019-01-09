@@ -28,7 +28,7 @@ public class ZoneReplication{
 		super();
 		this.id=id;
 		//this.zoneId = zoneTrans(id);
-		this.zoneId = id/NODENUM;
+		this.zoneId = id%4;
 		this.isReplica = isReplica;
 		this.maintenanceCount=0;
 		this.messageCount=0;
@@ -195,7 +195,7 @@ public class ZoneReplication{
 	 * @param zoneId
 	 * 4/12 ZoneTableにメッセージを送る用に変更
 	 */
-	 /*
+	 
 	ArrayList<ChordNode> maintenance(ArrayList<ChordNode> nodes,int myId){
 		this.maintenanceCount++;
 		ArrayList<Integer> myZoneTable = nodes.get(myId).getMyZoneTable();
@@ -281,21 +281,23 @@ public class ZoneReplication{
 		nodes.get(nextId).getZoneReplication().addMessage();
 		return nodes;
 	}
-	*/
-	//変更ver
-	ArrayList<ChordNode> maintenance(ArrayList<ChordNode> nodes,int myId){//←をつけたところは変更する必要なしと考える
+
+	/*
+	//位置情報ver
+	ArrayList<ChordNode> maintenance(ArrayList<ChordNode> nodes,int myId){
 		this.maintenanceCount++;//
-		ArrayList<Integer> myZoneTable = nodes.get(myId).getMyZoneTable();//
-		ArrayList<Integer> nextZoneTable = nodes.get(myId).getNextZoneTable();//
-		ArrayList<Integer> nextNextZoneTable = nodes.get(myId).getNextNextZoneTable();//
+		ArrayList<Integer> myZoneTable = nodes.get(myId).getMyZoneTable();
+		ArrayList<Integer> nextZoneTable = nodes.get(myId).getNextZoneTable();
+		ArrayList<Integer> nextNextZoneTable = nodes.get(myId).getNextNextZoneTable();
 		//自分自身のZone内のハートビートを送る
-		int nodeCount=heartBeat(nodes,myZoneTable);//
+		int nodeCount=heartBeat(nodes,myZoneTable);
 		//System.out.println(myZoneTable);
 		//次のノードを探す
-		int nextId = nodes.get(myId).getNextId();//
+		int nextId = nodes.get(myId).getNextId();
 		//System.out.println(nextId);
+		//if(nodes.get(myId).getIsReplica()==true)System.out.println(myId);
 		//監視先がないなら
-		if(nextId!=-1){
+		if(nextId!=-1){//複製のない場合
 			if(nodes.get(nextId).getIsJoin()&&nodes.get(nextId).getIsReplica()){
 				this.addMessage();
 				nodes.get(nextId).setPreId(myId);
@@ -304,11 +306,17 @@ public class ZoneReplication{
 			else if(nodes.get(nextId).getIsJoin()&&!nodes.get(nextId).getIsReplica()){
 				nodes.get(nextId).setReplica(true);
 				this.addMessage();
-				nodes.get(nextId).setPreId(myId);
+				if(nextId+120>999){
+					nodes.get(nextId).setPreId(myId);
+				}else{
+					nodes.get(nextId+120).setPreId(myId);
+				}
 			}else if(!nodes.get(nextId).getIsJoin()){
 				//nextZoneTableから複製できるNodeを探す
 				nextId = searchNextZoneId(nodes,nextZoneTable,nodes.get(myId).getZoneId());
-				//System.out.print("nextId:  ");
+				//System.out.print("my:  ");
+				//System.out.println(myId);
+				//System.out.print("next:  ");
 				//System.out.println(nextId);
 				nodes.get(myId).setNextId(nextId);
 				this.addMessage();
@@ -375,7 +383,7 @@ public class ZoneReplication{
 		nodes.get(nextId).getZoneReplication().addMessage();
 		return nodes;
 	}
-
+*/
 	/**
 	 * Zone再構成メソッド
 	 */

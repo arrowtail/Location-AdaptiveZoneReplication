@@ -65,6 +65,10 @@ public class LocationCustomZone {
 						int zoneId = aNode.getZoneReplication().getZoneId();
 						int myId = aNode.getId();
 						//System.out.println(myId);
+						//if(k<2)System.out.print("zoneId:");
+						//if(k<2)System.out.println(zoneId);
+						//if(k<2)System.out.print("myId:");
+						//if(k<2)System.out.println(myId);
 						nodes=aNode.getZoneReplication().maintenance(nodes,myId);
 					}
 				}
@@ -79,18 +83,17 @@ public class LocationCustomZone {
 	void replication(ArrayList<ChordNode> nodes) {
 		int zoneId = 0;
 		int id = 0;
-		int count=0;
 		for (Node aNode : nodes) {
 			if (aNode.getIsReplica()) {
-				//System.out.print(count);
-				//System.out.println(" ");
-				//System.out.println(zoneId);
 				zoneId = aNode.getZoneReplication().getZoneId();
-				id = aNode.getId() + ZONE;
-				if (id >= NODENUM) id -= NODENUM;
+				//System.out.print(zoneId);
+				//System.out.print(id+":");
+				id = aNode.getId() + 253;//元は+zone
+				//System.out.print(id+":");
+				if (id >= NODENUM) id -= NODENUM-12;
+				//System.out.println(id);
 				aNode.getZoneReplication().replication(nodes.get(id));
 			}
-			//count++;
 		}
 	}
 
@@ -320,6 +323,7 @@ public class LocationCustomZone {
 		for(int j=0;j<ZoneSim.ZONENUM;j++){
 			zoneTable.put(j, new ArrayList<Integer>());
 		}
+		//if(k==0)System.out.println(zoneTable);
 		for(String ip : ipList){
 			nodeList.put(i,ip);
 			int zoneId=0;
@@ -341,9 +345,9 @@ public class LocationCustomZone {
 			ChordNode temp = new ChordNode(i,nodeList.get(i), false, nodeList.get(i+1),nodeList.get(ZoneSim.NODENUM-1),new ZoneReplication(i,false),-1,-1,-1);
 			if (i == ORIGINAL || i == ORIGINAL2 || i== ORIGINAL3 || i==ORIGINAL4) {
 				if(i%4==0){//0
-					temp = new ChordNode(i,nodeList.get(i), true, nodeList.get(i+4),nodeList.get(ZoneSim.NODENUM-1),new ZoneReplication(i,false),nextId1(i), preId1(i), nextnextId1(i));
+					temp = new ChordNode(i,nodeList.get(i), true, nodeList.get(i+4),nodeList.get(ZoneSim.NODENUM-1),new ZoneReplication(i,false),nextId1(i), ORIGINAL4, nextnextId1(i));
 				}else if(i%4==3){//759
-					temp = new ChordNode(i,nodeList.get(i), true, nodeList.get(i+4),nodeList.get(ZoneSim.NODENUM-1),new ZoneReplication(i,false),nextId1(i), preId1(i), nextnextId1(i));
+					temp = new ChordNode(i,nodeList.get(i), true, nodeList.get(i+4),nodeList.get(ZoneSim.NODENUM-1),new ZoneReplication(i,false),0, preId1(i), nextnextId1(i));
 				}else if(i%4==1){//253
 					temp = new ChordNode(i,nodeList.get(i), true, nodeList.get(i+4),nodeList.get(ZoneSim.NODENUM-1),new ZoneReplication(i,false),nextId1(i), preId1(i), nextnextId1(i));
 				}else{//506
@@ -387,7 +391,8 @@ public class LocationCustomZone {
 			temp.setMyZoneTable(table.get(zoneId));
 			temp.setNextNextZoneTable(table.get(nextNextId));
 			temp.setZoneTable(table);
-
+			//ここでzoneIdなどは正しく設定できている
+			//if(k==0)System.out.println(table);
 			nodes.add(temp);
 		}
 		return nodes;
@@ -404,8 +409,8 @@ public class LocationCustomZone {
 		int churnNodeCount = 0;
 		int churnNodeNum = (int)(nodeNum*churnRate/100);
 		while(churnNodeNum > churnNodeCount){
-			int nodeId = random.nextInt(ZoneSim.NODENUM);//ここでchurnするノードを決めている
-			//int nodeId = churnNodeCount;//ChurnRateが10の場合、0~99までchurnさせる
+			//int nodeId = random.nextInt(ZoneSim.NODENUM);//ここでchurnするノードを決めている
+			int nodeId = churnNodeCount;//ChurnRateが10の場合、0~99までchurnさせる
 			if(!nodes.get(nodeId).getIsChurn()){
 				//if(k==0)System.out.println(nodeId);
 				nodes.get(nodeId).setIsChurn(true);
@@ -427,7 +432,8 @@ public class LocationCustomZone {
 		Random random = new Random();
 		int churnNodeNum = (int)(nodeNum*churnRate/100);
 		for(int i=0;i<churnNodeNum;i++){
-			int nodeId = random.nextInt(ZoneSim.NODENUM);
+			//int nodeId = random.nextInt(ZoneSim.NODENUM);//ランダムの場合
+			int nodeId = i;//200~300の場合はi+200に変更する必要あり
 			churnNodeList.add(nodeId);
 		}
 		return churnNodeList;

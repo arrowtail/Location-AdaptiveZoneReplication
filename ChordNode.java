@@ -98,7 +98,7 @@ public class ChordNode extends Node{
 		aDHT = new Dht(Integer.toString(id),nextNode,preNode);
 		this.nextId = nextId;
 		this.preId = preId;
-		this.zoneId=id/ZoneSim.ZONE;
+		this.zoneId=id%4;
 		try {
 			idString = aDHT.hash(address);
 		} catch (NoSuchAlgorithmException e) {

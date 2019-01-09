@@ -54,14 +54,16 @@ public class ZoneSim {
 		int reconstitutionCount=0;//再構成
 
 //提案手法
+
 		for (int i = 0; i < ROUND; i++) {
-			//System.out.println(i);
+			if(i%50==0)System.out.println(i);
 			ArrayList<ChordNode> nodes = new ArrayList<ChordNode>();
 			LocationCustomZone aLocationCustomZone = new LocationCustomZone();
 			nodes = aLocationCustomZone.init(nodes);
 			nodes = aLocationCustomZone.initChurnNode(nodes, NODENUM, CHURNRATE);
+			//ここまで問題なし
 			aLocationCustomZone.replication(nodes);
-			nodes = aLocationCustomZone.run(nodes,ROUND,CHURNFREQUENCY);
+			nodes = aLocationCustomZone.run(nodes,ROUND,CHURNFREQUENCY);//maintenanceの内容がおかしい
 //再構築
 			rebuildCount += aLocationCustomZone.getRebuildingCount(nodes);
 //ハートビート
@@ -74,11 +76,13 @@ public class ZoneSim {
 			reconstitutionCount += aLocationCustomZone.getReconstitutionCount(nodes);
 		}
 		System.out.println("LocationCustomZone");
+		System.out.println("局所");
 
 /*
 //AdaptiveZoneReplication
 		for (int i = 0; i < ROUND; i++) {
-			//System.out.println(i);
+		System.out.println("ROUND"+i);
+			//if(i%50==0)System.out.println(i);
 			ArrayList<ChordNode> nodes = new ArrayList<ChordNode>();
 			CustomZone aCustomZone = new CustomZone();
 			nodes = aCustomZone.init(nodes);
@@ -97,7 +101,8 @@ public class ZoneSim {
 			reconstitutionCount += aCustomZone.getReconstitutionCount(nodes);
 		}
 		System.out.println("CustomZone");
-*/
+		System.out.println("random");
+		*/
 //生存率
 		//System.out.println(MAXCHURNRATE*0.01 + " " + (double)arriveZone/(ROUND*ZONENUM)*100 + " " + message/ROUND);
 //メッセージ数,ハートビート数,再構成,再構成ハートビート,生存率,再構成回数
